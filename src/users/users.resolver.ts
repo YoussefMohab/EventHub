@@ -6,9 +6,12 @@ import { User } from '@prisma/client';
 import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/get-user.decorators';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorartor';
+import { UserRole } from './user-role.enum';
 
 @Resolver(() => UserType)
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class UserResolver {
     constructor(private readonly userService: UsersService) {}
 
@@ -22,6 +25,7 @@ export class UserResolver {
         return this.userService.findAllUsers(user.role);
     }
 
+    @Roles(UserRole.ADMIN)
     @Mutation(() => String)
     async deleteUser(@Args('id', ParseObjectIdPipe) id: string, @CurrentUser() user: User): Promise<string>{
         return this.userService.deleteUser(id, user);
