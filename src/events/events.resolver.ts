@@ -3,7 +3,7 @@ import { EventType } from './event.type';
 import { EventsService } from './events.service';
 import { CurrentUser } from '../auth/decorators/get-user.decorators';
 import { User, Event } from '@prisma/client';
-import { UseGuards } from '@nestjs/common';
+import { ParseUUIDPipe, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { EventInput } from './event.input';
 import { ParseObjectIdPipe } from 'src/users/pipes/userid.pipe';
@@ -24,7 +24,7 @@ export class EventsResolver {
     }
 
     @Mutation(() => EventType)
-    async updateEvent(@Args('id', ParseObjectIdPipe) eventId: string, @Args('updateEventInput') updateEventInput: EventInput, @CurrentUser() user: User) {
+    async updateEvent(@Args('id', ParseUUIDPipe) eventId: string, @Args('updateEventInput') updateEventInput: EventInput, @CurrentUser() user: User) {
         return this.eventsService.update(eventId, updateEventInput, user);
     }
 }

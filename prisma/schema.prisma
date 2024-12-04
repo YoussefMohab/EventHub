@@ -1,9 +1,62 @@
+// generator client {
+//   provider = "prisma-client-js"
+// }
+
+// datasource db {
+//   provider = "mongodb"
+//   url      = env("DATABASE_URL")
+// }
+
+// enum UserRole {
+//   Attendee
+//   Organizer
+//   Admin
+// }
+
+// enum RSVPStatus {
+//   Pending
+//   Attending
+//   Declined
+// }
+
+// model User {
+//   id       String   @id @default(auto()) @map("_id") @db.ObjectId
+//   email    String   @unique
+//   password String
+//   role     UserRole
+//   events   Event[]
+//   rsvps    RSVP[]
+// }
+
+// model Event {
+//   id          String   @id @default(auto()) @map("_id") @db.ObjectId
+//   title       String
+//   description String
+//   date        DateTime
+//   location    String
+//   organizer   User     @relation(fields: [organizerId], references: [id])
+//   organizerId String   @db.ObjectId
+//   attendees   RSVP[]
+// }
+
+// model RSVP {
+//   id      String     @id @default(auto()) @map("_id") @db.ObjectId
+//   userId  String     @db.ObjectId
+//   eventId String     @db.ObjectId
+//   status  RSVPStatus
+//   user    User       @relation(fields: [userId], references: [id])
+//   event   Event      @relation(fields: [eventId], references: [id])
+
+//   @@unique([userId, eventId])
+// }
+
+
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "mongodb"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -20,7 +73,7 @@ enum RSVPStatus {
 }
 
 model User {
-  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  id       String   @id @default(uuid())
   email    String   @unique
   password String
   role     UserRole
@@ -29,20 +82,20 @@ model User {
 }
 
 model Event {
-  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  id          String   @id @default(uuid())
   title       String
   description String
   date        DateTime
   location    String
-  organizer   User   @relation(fields: [organizerId], references: [id])
-  organizerId String @db.ObjectId
+  organizer   User     @relation(fields: [organizerId], references: [id])
+  organizerId String
   attendees   RSVP[]
 }
 
 model RSVP {
-  id      String     @id @default(auto()) @map("_id") @db.ObjectId
-  userId  String     @db.ObjectId
-  eventId String     @db.ObjectId
+  id      String     @id @default(uuid())
+  userId  String
+  eventId String
   status  RSVPStatus
   user    User       @relation(fields: [userId], references: [id])
   event   Event      @relation(fields: [eventId], references: [id])

@@ -5,9 +5,12 @@ import { RSVP, User } from '@prisma/client';
 import { CreateRsvpInput } from './create-rsvp.input';
 import { ParseObjectIdPipe } from '../users/pipes/userid.pipe';
 import { RSVPStatus } from './rsvp-status.enum';
-import { CurrentUser } from 'src/auth/decorators/get-user.decorators';
+import { CurrentUser } from '../auth/decorators/get-user.decorators';
+import { ParseUUIDPipe, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Resolver(() => RSVPType)
+@UseGuards(JwtAuthGuard)
 export class RsvpResolver {
   constructor(private readonly rsvpService: RsvpService) {}
 
@@ -26,7 +29,7 @@ export class RsvpResolver {
 
   @Mutation(() => RSVPType)
   async updateRsvpStatus(
-    @Args('rsvpId', ParseObjectIdPipe) rsvpId: string,
+    @Args('rsvpId', ParseUUIDPipe) rsvpId: string,
     @Args('status') status: RSVPStatus,
     @CurrentUser() user: User,
   ): Promise<RSVP> {
@@ -35,7 +38,7 @@ export class RsvpResolver {
 
   @Mutation(() => String)
   async deleteRsvp(
-    @Args('rsvpId', ParseObjectIdPipe) rsvpId: string,
+    @Args('rsvpId', ParseUUIDPipe) rsvpId: string,
     @CurrentUser() user: User,
   ): Promise<string> {
     return this.rsvpService.deleteRsvp(rsvpId, user);

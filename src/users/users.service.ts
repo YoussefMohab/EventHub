@@ -18,7 +18,7 @@ export class UsersService {
       if (!user) {
         throw new NotFoundException();
       }
-      return 
+      return user;
     }
     throw new UnauthorizedException('You do not have permission to access this user.');
   }

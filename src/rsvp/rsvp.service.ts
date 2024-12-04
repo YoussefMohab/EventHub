@@ -14,7 +14,7 @@ export class RsvpService {
   ) {}
 
   async createRsvp(createRsvpInput: CreateRsvpInput, user: User): Promise<RSVP> {
-    const { eventId, status } = createRsvpInput;
+    const { eventId, status } = createRsvpInput;    
     return this.prisma.rSVP.create({ data: { userId: user.id, eventId, status } });
   } 
 
